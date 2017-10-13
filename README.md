@@ -18,7 +18,7 @@ To get started:
 
 ## Notes:
     If you, for some reason, your environment app can't access localhost:
-    $ vi /frontend/src/PostsAPI.js
+    $ vi ./frontend/src/PostsAPI.js
     on the first line, change `url` value for your local url
 
 
