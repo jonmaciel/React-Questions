@@ -14,8 +14,11 @@ class Post extends Component {
     comment: ''
   };
 
-  handleShowComments = () => {
+  componentDidMount() {
     this.props.loadComments(this.props.id);
+  }
+
+  handleShowComments = () => {
     this.setState({isCommentsLoaded: true})
   }
 
@@ -111,11 +114,14 @@ class Post extends Component {
   }
 
   render() {
+    const comments = this.props.comments();
+
     return (
       <div className="post">
         <span className="score">Score: {this.props.voteScore}</span>
         {this.state.isEditing ? this.renderEditOnlyPost() : this.renderReadOnlyPost()}
         <h5>Comments</h5>
+        <span className="score">{comments.length}</span>
         { this.state.isCommentsLoaded ?
           <div>
             <a href="#show-comments" onClick={this.handleHideComments}>
@@ -123,7 +129,7 @@ class Post extends Component {
             </a>
             <div>
               {
-                this.props.comments().map((comment, key) =>
+                comments.map((comment, key) =>
                   <Comment
                     key={key}
                     currentAuthor={this.props.currentAuthor}
