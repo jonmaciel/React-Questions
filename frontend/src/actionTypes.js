@@ -16,6 +16,3 @@ export const THUMBS_COMMENT = 'comments/THUMBS';
 export const ADD_CATEGORIES = 'categories/ADD';
 export const ADD_COMMENT_TO_CATEGORIE = 'categories/ADD_COMMENT_TO_CATEGORIE';
 
-
-
-

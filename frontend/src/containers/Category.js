@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { thumbsPost, deletePost, sendPost } from '../actions/';
+import { deletePost, sendPost } from '../actions/';
 import Post from './Post';
 
 class Category extends Component {
@@ -38,7 +38,7 @@ class Category extends Component {
             {this.props.posts && this.props.posts.map((post, i) =>
               <li key={i}>
                 <Post
-                  thumbsPost={this.props.thumbsPost}
+                  categoryPath={this.props.path}
                   deletePost={this.props.deletePost}
                   {...post} />
               </li>
@@ -81,7 +81,6 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  thumbsPost: (postId, voteScore) => dispatch(thumbsPost(postId, voteScore)),
   deletePost: postId => dispatch(deletePost(postId)),
   sendPost: (category, title, body) => dispatch(sendPost(category, title, body)),
 });

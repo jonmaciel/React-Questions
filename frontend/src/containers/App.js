@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { loadAll, addAuthor } from '../actions/';
 import Category from './Category';
+import Post from './Post';
 import Login from '../components/Login';
-import { Route } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 import '../App.css';
 
 class App extends Component {
@@ -17,7 +18,8 @@ class App extends Component {
   }
 
   render() {
-    const { currentAuthor } = this.props;
+    const { currentAuthor, categories, posts } = this.props;
+
     return (
       <div className="App">
         <div className="list-posts-content">
@@ -25,31 +27,38 @@ class App extends Component {
             <h1>Questions</h1>
             <span>{currentAuthor.length ? `Author: ${currentAuthor}` : '' } </span>
           </div>
-          <Route exact path="/" render={({history}) =>
-            <div className="list-posts-content">
-              { !currentAuthor.length ?
-                history.push('/login') :
-                Object.values(this.props.categories).map(category =>
-                <Category key={category.path} {...category}/>
-              )}
-            </div>
-          } />
-          <Route path="/login" render={({history}) =>
-            <Login onLogin={name => {
-                this.onLogin(name);
-                history.push('/')
-              }}
-            />}
-          />
+          {
+            currentAuthor.length ?
+            <div>
+              <Route path="/:category/:postId" render={({match}) => {
+               const showCategory = categories[match.params.category]
+               const postId = match.params.postId
+               if(!showCategory || !showCategory.postIds.includes(postId)) return <div/>;
+               return  <div>
+                  <h2>{showCategory.name}</h2>
+                  <Post {...posts[postId]} isShowPage={true} />
+                </div>
+              }
+              } />
+              <Route exact path="/" render={() =>
+                <div className="list-posts-content">
+                { Object.values(this.props.categories).map(category => <Category key={category.path} {...category}/> )}
+                </div>
+              } />
+            </div> :
+            <Login onLogin={(name) => {this.onLogin(name)}} />
+          }
         </div>
       </div>
+
     );
   }
 }
 
 const mapStateToProps = state => ({
   currentAuthor: state.session.author || '',
-  categories: state.categories
+  categories: state.categories || {},
+  posts: state.posts || {}
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -57,4 +66,4 @@ const mapDispatchToProps = dispatch => ({
   addAuthor: author => dispatch(addAuthor(author))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

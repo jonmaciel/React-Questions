@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { loadComments, sendComment, thumbsComment, deleteComment, sendEditPost, sendEditComment } from '../actions/';
+import { connect, withRouter } from 'react-redux';
+import { Link } from 'react-router-dom'
+import { loadComments, sendComment, thumbsComment, deleteComment, sendEditPost, sendEditComment, thumbsPost } from '../actions/';
 import Comment from '../components/comment';
 
 class Post extends Component {
@@ -55,15 +56,24 @@ class Post extends Component {
   }
 
   renderReadOnlyPost = () => {
-    const {id, title, body, author} = this.props
+    const {id, title, body, author, categoryPath} = this.props
     const isWrittenByCurrentlyauthor = this.props.currentAuthor === author;
 
     return(
       <div>
         <h4 className="post-body-title">{title}</h4>
         <div>
+          <br/>
           <div>{body}</div>
           <span>By: {author}</span>
+          <br/><br/>
+          {
+            this.props.isShowPage ?
+              <Link to="/">Back to list</Link> :
+              <Link to={`/${categoryPath}/${id}`}>
+                Show details...
+              </Link>
+          }
           <div>
           { isWrittenByCurrentlyauthor && <a href="#edit" onClick={this.handleEdit}>Edit..</a>}
           </div>
@@ -182,6 +192,7 @@ const mapDispatchToProps = dispatch => ({
   sendEditComment: (id, comment) => dispatch(sendEditComment(id, comment)),
   thumbsComment: (commentID, voteScore) => dispatch(thumbsComment(commentID, voteScore)),
   deleteComment: commentID => dispatch(deleteComment(commentID)),
+  thumbsPost: (postId, voteScore) => dispatch(thumbsPost(postId, voteScore)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);
