@@ -47,8 +47,10 @@ class Category extends Component {
         <Link to="/" >
           Back to categories list
         </Link>
-        <a href="#" onClick={() => this.setState({order: 'timestamp'})}>Sort by Date</a>
-        <a href="#" onClick={() => this.setState({order: 'voteScore'})}>Sort by Score</a>
+        <div className="thumbs-opts">
+          <a href="#" onClick={() => this.setState({order: 'timestamp'})}>Sort by Date</a>
+          <a href="#" onClick={() => this.setState({order: 'voteScore'})}>Sort by Score</a>
+        </div>
         <div className="post-body-posts">
           <ol>
             {this.ordererdPosts().map((post, i) => {
