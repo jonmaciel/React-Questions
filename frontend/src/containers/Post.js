@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { connect, withRouter } from 'react-redux';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
-import { loadComments, sendComment, thumbsComment, deleteComment, sendEditPost, sendEditComment, thumbsPost } from '../actions/';
+import { loadComments, sendComment, thumbsComment, deleteComment, sendEditPost, sendEditComment, thumbsPost, deletePost } from '../actions/';
 import Comment from '../components/comment';
 
 class Post extends Component {
@@ -16,7 +16,7 @@ class Post extends Component {
   };
 
   componentDidMount() {
-    this.props.loadComments(this.props.id);
+    if(!this.props.comments().length) this.props.loadComments(this.props.id);
   }
 
   handleShowComments = () => {
@@ -55,27 +55,26 @@ class Post extends Component {
     this.props.sendComment(this.props.id, coment)
   }
 
+  handleDeletePost = () => {
+     this.props.deletePost(this.props.id)
+     this.props.history.push(`/${this.props.category.path}`)
+  }
+
   renderReadOnlyPost = () => {
-    const {id, title, body, author, categoryPath} = this.props
+    const {title, body, author} = this.props
     const isWrittenByCurrentlyauthor = this.props.currentAuthor === author;
 
     return(
-      <div>
+      <div className="post-body">
+        {this.props.isShowPage && <Link to={`/${this.props.category.path}`}>Back to post list</Link>}
         <h4 className="post-body-title">{title}</h4>
         <div>
           <br/>
           <div>{body}</div>
           <span>By: {author}</span>
-          <br/><br/>
-          {
-            this.props.isShowPage ?
-              <Link to="/">Back to list</Link> :
-              <Link to={`/${categoryPath}/${id}`}>
-                Show details...
-              </Link>
-          }
+          <br/>
           <div>
-          { isWrittenByCurrentlyauthor && <a href="#edit" onClick={this.handleEdit}>Edit..</a>}
+          { isWrittenByCurrentlyauthor && <a href="#edit" onClick={this.handleEdit}>------EDIT!-----</a>}
           </div>
         </div>
         <br />
@@ -83,7 +82,7 @@ class Post extends Component {
           <a href="#thumbs-up" onClick={this.handlePositiveVotes}>I like it!</a>
           <a href="#thumbs-down" onClick={this.handleNegativeVotes}>I don't like it!</a>
           { isWrittenByCurrentlyauthor &&
-            <a href="#delete" onClick={() => this.props.deletePost(id)}>delete</a>
+            <a href="#delete" onClick={this.handleDeletePost}>delete</a>
           }
         </div>
       </div>
@@ -127,7 +126,8 @@ class Post extends Component {
     const comments = this.props.comments();
 
     return (
-      <div className="post">
+      <div className="post single-post">
+        <h2 className="post-body-title">{this.props.category.name}</h2>
         <span className="score">Score: {this.props.voteScore}</span>
         {this.state.isEditing ? this.renderEditOnlyPost() : this.renderReadOnlyPost()}
         <h5>Comments</h5>
@@ -186,6 +186,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  deletePost: postId => dispatch(deletePost(postId)),
   loadComments: postId => dispatch(loadComments(postId)),
   sendComment: (postId, comment) => dispatch(sendComment(postId, comment)),
   sendEditPost: (id, title, body) => dispatch(sendEditPost(id, title, body)),

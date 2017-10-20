@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Category extends Component {
+class Login extends Component {
   state = {
     name: ''
   };
@@ -23,4 +23,4 @@ class Category extends Component {
   }
 }
 
-export default Category;
+export default Login;

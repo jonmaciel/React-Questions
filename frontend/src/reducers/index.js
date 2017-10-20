@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import * as t from '../actionTypes';
 
 const session = (state = {author: undefined}, action) => {
-  const { author, urlParams } = action;
+  const { author } = action;
 
   switch (action.type) {
     case t.ADD_AUTHOR: {

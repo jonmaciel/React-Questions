@@ -4,6 +4,7 @@ import { loadAll, addAuthor } from '../actions/';
 import Category from './Category';
 import Post from './Post';
 import Login from '../components/Login';
+import CategoryList from '../components/CategoryList';
 import { Route, withRouter } from 'react-router-dom'
 import '../App.css';
 
@@ -30,20 +31,21 @@ class App extends Component {
           {
             currentAuthor.length ?
             <div>
-              <Route path="/:category/:postId" render={({match}) => {
-               const showCategory = categories[match.params.category]
-               const postId = match.params.postId
-               if(!showCategory || !showCategory.postIds.includes(postId)) return <div/>;
-               return  <div>
-                  <h2>{showCategory.name}</h2>
-                  <Post {...posts[postId]} isShowPage={true} />
-                </div>
-              }
+              <Route path="/:category/:postId" render={({history, match}) => {
+                const showCategory = categories[match.params.category]
+                const postId = match.params.postId
+                if(!showCategory || !showCategory.postIds.includes(postId)) return <div/>;
+                return (
+                  <div className="list-posts-content">
+                    <Post {...posts[postId]} isShowPage={true} history={history} category={showCategory} />
+                  </div>
+                )
+              }} />
+              <Route exact path="/:category" render={({history, match}) =>
+                <Category {...this.props.categories[match.params.category]} history={history}/>
               } />
-              <Route exact path="/" render={() =>
-                <div className="list-posts-content">
-                { Object.values(this.props.categories).map(category => <Category key={category.path} {...category}/> )}
-                </div>
+              <Route exact path="/" render={({history}) =>
+                <CategoryList categories={this.props.categories}/>
               } />
             </div> :
             <Login onLogin={(name) => {this.onLogin(name)}} />

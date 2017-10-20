@@ -4,12 +4,30 @@ html {
 *, *:before, *:after {
   box-sizing: inherit;
 }
+
+button {
+  padding: 10px;
+  margin: 10px;
+}
+
+input, textarea {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 1000px 10px 10px;
+}
+
+textarea {
+  height: 200px;
+}
 body {
   margin: 0;
   padding: 0;
   font-family: 'Roboto', sans-serif;
 }
-
+.single-post {
+  margin-left: 30px;
+  width: 100%;
+}
 .score{
   float: right;
   background: rgba(241,241,230,10);

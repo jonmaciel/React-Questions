@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { deletePost, sendPost } from '../actions/';
-import Post from './Post';
+import { sendPost } from '../actions/';
+import { Link } from 'react-router-dom'
 
 class Category extends Component {
 
@@ -33,15 +33,18 @@ class Category extends Component {
         <h2 className="post-body-title">
           {this.props.name}
         </h2>
+        <Link to="/" >
+          Back to categories list
+        </Link>
+
         <div className="post-body-posts">
-          <ol className="posts-grid">
+          <ol>
             {this.props.posts && this.props.posts.map((post, i) =>
-              <li key={i}>
-                <Post
-                  categoryPath={this.props.path}
-                  deletePost={this.props.deletePost}
-                  {...post} />
-              </li>
+            <li key={i}>
+              <Link key={post.id} to={`/${this.props.path}/${post.id}`}>
+                {post.title} - Score {post.voteScore}
+              </Link>
+            </li>
             )}
           </ol>
         </div>
@@ -81,7 +84,6 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  deletePost: postId => dispatch(deletePost(postId)),
   sendPost: (category, title, body) => dispatch(sendPost(category, title, body)),
 });
 
