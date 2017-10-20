@@ -7,6 +7,7 @@ class Category extends Component {
 
   state = {
     isWritingPost: false,
+    order: 'id',
   }
 
   toggleWritingPost = () =>
@@ -27,6 +28,16 @@ class Category extends Component {
     this.toggleWritingPost();
   }
 
+  ordererdPosts = () => {
+    const posts = this.props.posts;
+    const order = this.state.order;
+    if(!posts) return [];
+    if(order === 'id') return posts;
+
+    return posts.map(post => post[order]).sort()
+      .map(orderAttr => posts.filter(post => post[order] === orderAttr)[0])
+  }
+
   render() {
     return (
       <div className="post-body">
@@ -36,15 +47,20 @@ class Category extends Component {
         <Link to="/" >
           Back to categories list
         </Link>
-
+        <a href="#" onClick={() => this.setState({order: 'timestamp'})}>Sort by Date</a>
+        <a href="#" onClick={() => this.setState({order: 'voteScore'})}>Sort by Score</a>
         <div className="post-body-posts">
           <ol>
-            {this.props.posts && this.props.posts.map((post, i) =>
-            <li key={i}>
-              <Link key={post.id} to={`/${this.props.path}/${post.id}`}>
-                {post.title} - Score {post.voteScore}
-              </Link>
-            </li>
+            {this.ordererdPosts().map((post, i) => {
+              const date = new Date(post.timestamp)
+              return (
+                <li key={i}>
+                  <Link key={post.id} to={`/${this.props.path}/${post.id}`}>
+                   {`${date.getDay()}/${date.getMonth()}/${date.getYear()}`} - {post.title} - Score {post.voteScore}
+                  </Link>
+                </li>
+              )
+            }
             )}
           </ol>
         </div>
