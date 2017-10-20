@@ -74,7 +74,6 @@ class Post extends Component {
           <span>By: {author}</span>
           <br/>
           <div>
-          { isWrittenByCurrentlyauthor && <a href="#edit" onClick={this.handleEdit}>------EDIT!-----</a>}
           </div>
         </div>
         <br />
@@ -83,6 +82,9 @@ class Post extends Component {
           <a href="#thumbs-down" onClick={this.handleNegativeVotes}>I don't like it!</a>
           { isWrittenByCurrentlyauthor &&
             <a href="#delete" onClick={this.handleDeletePost}>delete</a>
+          }
+          { isWrittenByCurrentlyauthor &&
+            <a href="#edit" onClick={this.handleEdit}>------EDIT!-----</a>
           }
         </div>
       </div>
