@@ -61,13 +61,15 @@ class Post extends Component {
   }
 
   renderReadOnlyPost = () => {
-    const {title, body, author} = this.props
+    const {title, body, author, timestamp} = this.props
     const isWrittenByCurrentlyauthor = this.props.currentAuthor === author;
+    const date = new Date(timestamp)
 
     return(
-      <div className="post-body">
+      <div>
         {this.props.isShowPage && <Link to={`/${this.props.category.path}`}>Back to post list</Link>}
         <h4 className="post-body-title">{title}</h4>
+        {`${('0' + (date.getMonth() + 1)).slice(-2) }/${('0' + date.getDate()).slice(-2)}/${date.getFullYear()}`}
         <div>
           <br/>
           <div>{body}</div>
@@ -80,12 +82,8 @@ class Post extends Component {
         <div className="thumbs-opts">
           <a href="#thumbs-up" onClick={this.handlePositiveVotes}>I like it!</a>
           <a href="#thumbs-down" onClick={this.handleNegativeVotes}>I don't like it!</a>
-          { isWrittenByCurrentlyauthor &&
-            <a href="#delete" onClick={this.handleDeletePost}>delete</a>
-          }
-          { isWrittenByCurrentlyauthor &&
-            <a href="#edit" onClick={this.handleEdit}>------EDIT!-----</a>
-          }
+          <a href="#delete" onClick={this.handleDeletePost}>X - DELETE</a>
+          <a href="#edit" onClick={this.handleEdit}>------EDIT!-----</a>
         </div>
       </div>
     )

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { sendPost } from '../actions/';
+import { sendPost, loadComments } from '../actions/';
 import { Link } from 'react-router-dom'
+import Post from './Post'
 
 class Category extends Component {
-
   state = {
     isWritingPost: false,
     order: 'id',
@@ -34,7 +34,7 @@ class Category extends Component {
     if(!posts) return [];
     if(order === 'id') return posts;
 
-    return posts.map(post => post[order]).sort()
+    return posts.map(post => post[order]).sort(function(a,b){return a - b})
       .map(orderAttr => posts.filter(post => post[order] === orderAttr)[0])
   }
 
@@ -48,18 +48,20 @@ class Category extends Component {
           Back to categories list
         </Link>
         <div className="thumbs-opts">
-          <a href="#" onClick={() => this.setState({order: 'timestamp'})}>Sort by Date</a>
-          <a href="#" onClick={() => this.setState({order: 'voteScore'})}>Sort by Score</a>
+          <a href="#sort-date" onClick={() => this.setState({order: 'timestamp'})}>Sort by Date</a>
+          <a href="#sort-score" onClick={() => this.setState({order: 'voteScore'})}>Sort by Score</a>
         </div>
         <div className="post-body-posts">
-          <ol>
+          <ol className="posts-grid">
             {this.ordererdPosts().map((post, i) => {
-              const date = new Date(post.timestamp)
               return (
                 <li key={i}>
-                  <Link key={post.id} to={`/${this.props.path}/${post.id}`}>
-                   {`${date.getDay()}/${date.getMonth()}/${date.getYear()}`} - {post.title} - Score {post.voteScore}
-                  </Link>
+                  <div className="post-body">
+                    <Link key={post.id} to={`/${this.props.path}/${post.id}`}>
+                      SHOW DETAILS
+                    </Link>
+                    <Post {...post} history={this.props.history} category={this.props} />
+                  </div>
                 </li>
               )
             }
@@ -98,11 +100,12 @@ class Category extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
   posts: ownProps.postIds &&
-    ownProps.postIds.map(postId => state.posts[postId]).filter(post => post && !post.deleted)
+    ownProps.postIds.map(postId => state.posts[postId]).filter(post => post && !post.deleted),
 });
 
 const mapDispatchToProps = dispatch => ({
   sendPost: (category, title, body) => dispatch(sendPost(category, title, body)),
+  loadComments: postId => dispatch(loadComments(postId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Category);
